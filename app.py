@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from flask import Flask, request, url_for, jsonify
+from flask import Flask, request, url_for, jsonify, render_template
 from db import noticias
 
 
@@ -8,18 +8,9 @@ app = Flask("flask2")
 
 # por enquanto vamos usar um template html hardcoded
 # mas calma! em breve falaremos  sobre os templates com Jinja2
-base_html = u"""
-  <html>
-  <head>
-      <title>{title}</title>
-  </head>
-  <body>
-    <img src="{logo_url}" />
-      <hr />
-     {body}
-  </body>
-  </html>
-"""
+
+def html_page():
+  return render_template("cadastro_page.html")
 
 
 @app.route("/noticias/cadastro", methods=["GET", "POST"])
@@ -44,7 +35,7 @@ def cadastro():
                <input type="submit" value="Postar" />
            </form>
         """
-        return base_html.format(title=u"Inserir nova noticia", 
+        return html_page().format(title=u"Inserir nova noticia", 
           body=formulario,
           logo_url=url_for('static', filename='generic_logo.gif')
         )
