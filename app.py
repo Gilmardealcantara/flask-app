@@ -47,7 +47,7 @@ def cadastro():
 
 
 
-@app.route("/")
+@app.route("/noticias/")
 def index():
 
     noticia_template = u"""
@@ -64,6 +64,17 @@ def index():
         title=u"Todas as notícias",
         body=u"<br />".join(todas_as_noticias)
     )
+
+
+@app.route("/noticias/<int:noticia_id>")
+def noticia(noticia_id):
+    noticia = noticias.find_one(id=noticia_id)  # query no banco de dados
+    noticia_html = u"""
+        <h1>{titulo}</h1>
+        <p>{texto}</p>
+    """.format(**noticia)  # remember, Python is full of magic!
+
+    return base_html.format(title=noticia['titulo'], body=noticia_html
 
 
 if __name__ == "__main__":
