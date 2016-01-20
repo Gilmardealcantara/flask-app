@@ -14,6 +14,8 @@ base_html = u"""
       <title>{title}</title>
   </head>
   <body>
+    <img src="{logo_url}" />
+      <hr />
      {body}
   </body>
   </html>
@@ -42,18 +44,25 @@ def cadastro():
                <input type="submit" value="Postar" />
            </form>
         """
-        return base_html.format(title=u"Inserir nova noticia", body=formulario)
+        return base_html.format(title=u"Inserir nova noticia", 
+          body=formulario,
+          logo_url=url_for('static', filename='generic_logo.gif')
+        )
 
 
 
 @app.route("/noticias/")
 def index():
-    return jsonify(noticias=[noticia for noticia in noticias.all()])
+    return jsonify(noticias=[noticia for noticia in noticias.all()])     
+    
 
 @app.route("/noticias/<int:noticia_id>")
 def noticia(noticia_id):
     noticia = noticias.find_one(id=noticia_id)  # query no banco de dados
-    return jsonify(noticia=noticia)
+    return jsonify(noticia=noticia)   
+    
+
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True)
+
