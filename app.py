@@ -1,11 +1,10 @@
 # coding: utf-8
 
-from flask import Flask, request, url_for
-
+from flask import Flask, request, url_for, jsonify
 from db import noticias
 
 
-app = Flask("wtf")
+app = Flask("flask2")
 
 # por enquanto vamos usar um template html hardcoded
 # mas calma! em breve falaremos  sobre os templates com Jinja2
@@ -49,33 +48,12 @@ def cadastro():
 
 @app.route("/noticias/")
 def index():
-
-    noticia_template = u"""
-        <a href="/noticia/{noticia[id]}">{noticia[titulo]}</a>
-    """
-
-    # it's a kind of magic :)
-    todas_as_noticias = [
-        noticia_template.format(noticia=noticia)
-        for noticia in noticias.all()
-    ]
-
-    return base_html.format(
-        title=u"Todas as notícias",
-        body=u"<br />".join(todas_as_noticias)
-    )
-
+    return jsonify(noticias=[noticia for noticia in noticias.all()])
 
 @app.route("/noticias/<int:noticia_id>")
 def noticia(noticia_id):
     noticia = noticias.find_one(id=noticia_id)  # query no banco de dados
-    noticia_html = u"""
-        <h1>{titulo}</h1>
-        <p>{texto}</p>
-    """.format(**noticia)  # remember, Python is full of magic!
-
-    return base_html.format(title=noticia['titulo'], body=noticia_html
-
+    return jsonify(noticia=noticia)
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True)
