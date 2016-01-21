@@ -18,6 +18,7 @@ def formulario_page():
 @app.route("/noticias/cadastro", methods=["GET", "POST"])
 def cadastro():
     if request.method == "POST":
+        print 'entrou no post'
         dados_do_formulario = request.form.to_dict()
         nova_noticia = noticias.insert(dados_do_formulario)
         return u"""
@@ -26,7 +27,7 @@ def cadastro():
         """ % (nova_noticia, url_for('cadastro'))
     else:  # GET
         return html_page().format(title=u"Inserir nova noticia", 
-          body=formulario_page(),
+           body = formulario_page(),
           logo_url=url_for('static', filename='generic_logo.gif')
         )
 
