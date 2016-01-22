@@ -5,13 +5,17 @@ from flask import (
     Flask, request, current_app, send_from_directory, render_template
 )
 
-from db import noticias
+from db import noticias_table
 
-app = Flask("wtf")
+app = Flask("Flask-app")
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 app.config['MEDIA_ROOT'] = os.path.join(PROJECT_ROOT, 'media_files')
 
+
+@app.route('/')
+def index():
+    return render_template('home.html')
 
 @app.route("/noticias/cadastro", methods=["GET", "POST"])
 def cadastro():
@@ -26,16 +30,18 @@ def cadastro():
             imagem.save(path)
             dados_do_formulario['imagem'] = filename
 
-        id_nova_noticia = noticias.insert(dados_do_formulario)
+        id_nova_noticia = noticias_table.insert(dados_do_formulario)
+        
         return render_template('cadastro_sucesso.html',
                                 id_nova_noticia=id_nova_noticia)
+    else :   
+        return render_template('cadastro.html', title=u"Inserir nova noticia")
 
-    return render_template('cadastro.html', title=u"Inserir nova noticia")
 
 
-@app.route("/")
-def index():
-    todas_as_noticias = noticias.all()
+@app.route("/noticias/")
+def noticias():
+    todas_as_noticias = noticias_table.all()
     return render_template('index.html',
                            noticias=todas_as_noticias,
                            title=u"Todas as notícias")
@@ -43,7 +49,7 @@ def index():
 
 @app.route("/noticia/<int:noticia_id>")
 def noticia(noticia_id):
-    noticia = noticias.find_one(id=noticia_id)
+    noticia = noticias_table.find_one(id=noticia_id)
     return render_template('noticia.html', noticia=noticia)
 
 
@@ -54,3 +60,5 @@ def media(filename):
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True)
+
+    
