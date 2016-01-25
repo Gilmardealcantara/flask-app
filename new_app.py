@@ -2,7 +2,7 @@
 import os
 from werkzeug import secure_filename
 from flask import (
-    Flask, request, current_app, send_from_directory, render_template
+    Flask, request, current_app, send_from_directory, render_template, jsonify
 )
 
 from db import noticias_table
@@ -41,16 +41,16 @@ def cadastro():
 
 @app.route("/noticias/")
 def noticias():
-    todas_as_noticias = noticias_table.all()
-    return render_template('index.html',
-                           noticias=todas_as_noticias,
-                           title=u"Todas as notícias")
+    return jsonify(noticias_table=[noticia for noticia in noticias_table.all()])
+    #todas_as_noticias = noticias_table.all()
+    #return render_template('index.html', noticias=todas_as_noticias,title=u"Todas as notícias")
 
 
 @app.route("/noticia/<int:noticia_id>")
 def noticia(noticia_id):
     noticia = noticias_table.find_one(id=noticia_id)
-    return render_template('noticia.html', noticia=noticia)
+    return jsonify(noticia=noticia)
+    #return render_template('noticia.html', noticia=noticia)
 
 
 @app.route('/media/<path:filename>')
